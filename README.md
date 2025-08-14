@@ -1,97 +1,214 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Google Forms Automation Frontend
 
-# Getting Started
+Una aplicación móvil moderna en React Native para automatizar formularios de Google Forms. La aplicación presenta una interfaz elegante con paleta de colores en blanco, negro y azul, diseñada para ser profesional, funcional y fácil de usar.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🚀 Características
 
-## Step 1: Start Metro
+- **Interfaz moderna**: Diseño limpio y profesional con componentes UI modernos
+- **Validación completa**: Validación en tiempo real de todos los campos obligatorios
+- **Campos dinámicos**: Soporte para campos de texto, número, email, teléfono y toggles Sí/No
+- **Manejo de errores**: Mensajes claros de error y éxito
+- **Diseño responsive**: Adaptable a diferentes tamaños de pantalla
+- **Buenas prácticas**: Hooks personalizados, componentes funcionales y TypeScript
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🎨 Paleta de Colores
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **Fondo**: Blanco (#FFFFFF)
+- **Texto principal**: Negro (#000000)
+- **Acentos y botones**: Azul (#007AFF)
+- **Estados**: Verde para éxito, Rojo para errores
 
-```sh
-# Using npm
-npm start
+## 📋 Campos del Formulario
 
-# OR using Yarn
-yarn start
+### Campos Obligatorios
+- Nombre completo
+- Correo electrónico
+- Teléfono
+- Empresa
+- Cargo
+- Años de experiencia
+- Aceptación de términos y condiciones
+
+### Campos Sí/No (Toggles)
+- ¿Tiene experiencia previa en el área?
+- ¿Disponible para comenzar inmediatamente?
+- ¿Acepta trabajo remoto?
+- ¿Desea recibir notificaciones?
+- Acepto términos y condiciones (obligatorio)
+
+## 🛠️ Tecnologías Utilizadas
+
+- React Native 0.81.0
+- TypeScript
+- React Hooks (useState, useCallback)
+- SafeAreaProvider para manejo de áreas seguras
+- Validación personalizada
+- API REST para comunicación con backend
+
+## 📁 Estructura del Proyecto
+
+```
+src/
+├── components/           # Componentes reutilizables
+│   ├── Button.tsx       # Botón personalizado
+│   ├── FormField.tsx    # Campo de formulario
+│   ├── ToggleField.tsx  # Campo toggle/switch
+│   ├── LoadingSpinner.tsx # Indicador de carga
+│   ├── MessageBanner.tsx # Banner de mensajes
+│   └── index.ts         # Exportaciones
+├── hooks/               # Hooks personalizados
+│   └── useForm.ts       # Hook para manejo del formulario
+├── screens/             # Pantallas de la aplicación
+│   └── FormScreen.tsx   # Pantalla principal del formulario
+├── types/               # Definiciones de TypeScript
+│   └── index.ts         # Tipos de datos
+└── utils/               # Utilidades
+    ├── constants.ts     # Constantes y configuración
+    ├── validation.ts    # Lógica de validación
+    ├── api.ts          # Comunicación con API
+    └── index.ts        # Exportaciones
 ```
 
-## Step 2: Build and run your app
+## 🚀 Instalación y Configuración
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+### Prerrequisitos
 
-### Android
+Asegúrate de tener configurado tu entorno de desarrollo React Native siguiendo la [guía oficial](https://reactnative.dev/docs/set-up-your-environment).
 
-```sh
-# Using npm
-npm run android
+### Instalación
 
-# OR using Yarn
-yarn android
+1. **Clona el repositorio**
+   ```bash
+   git clone https://github.com/ProminenceWar/google-forms-automation-frontend.git
+   cd google-forms-automation-frontend
+   ```
+
+2. **Instala las dependencias**
+   ```bash
+   npm install
+   ```
+
+3. **Configura el backend** (opcional)
+   
+   Edita el archivo `src/utils/constants.ts` y actualiza la URL del backend:
+   ```typescript
+   export const API_CONFIG = {
+     BASE_URL: 'https://tu-backend-url.com/api', // Reemplazar con la URL real
+     // ...
+   };
+   ```
+
+4. **Para iOS (solo macOS)**
+   ```bash
+   cd ios
+   bundle install
+   bundle exec pod install
+   cd ..
+   ```
+
+### Ejecución
+
+1. **Inicia Metro (en una terminal)**
+   ```bash
+   npm start
+   ```
+
+2. **Ejecuta la aplicación (en otra terminal)**
+
+   **Para Android:**
+   ```bash
+   npm run android
+   ```
+
+   **Para iOS:**
+   ```bash
+   npm run ios
+   ```
+
+## 🧪 Testing
+
+```bash
+# Ejecutar tests
+npm test
+
+# Ejecutar linter
+npm run lint
 ```
 
-### iOS
+## 📱 Uso de la Aplicación
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+1. **Completa los campos obligatorios**: La aplicación validará automáticamente cada campo
+2. **Configura las preferencias**: Usa los toggles para responder las preguntas Sí/No
+3. **Acepta términos**: Requerido para habilitar el envío
+4. **Envía el formulario**: El botón se habilitará solo cuando todos los campos sean válidos
+5. **Revisa el resultado**: Verás un mensaje de éxito o error después del envío
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## 🔧 Personalización
 
-```sh
-bundle install
+### Modificar colores
+Edita `src/utils/constants.ts` en la sección `Colors`:
+
+```typescript
+export const Colors = {
+  primary: '#007AFF',     // Color principal (azul)
+  secondary: '#000000',   // Color secundario (negro)
+  background: '#FFFFFF',  // Fondo (blanco)
+  // ...
+};
 ```
 
-Then, and every time you update your native dependencies, run:
+### Agregar nuevos campos
+1. Actualiza el tipo `FormData` en `src/types/index.ts`
+2. Modifica la validación en `src/utils/validation.ts`
+3. Agrega el campo en `src/screens/FormScreen.tsx`
 
-```sh
-bundle exec pod install
+### Cambiar endpoint del backend
+Edita `API_CONFIG.BASE_URL` en `src/utils/constants.ts`
+
+## 🌟 Características Técnicas
+
+- **Validación en tiempo real**: Los errores se muestran mientras el usuario escribe
+- **Botón inteligente**: Se deshabilita automáticamente si el formulario no es válido
+- **Manejo de estado robusto**: Hook personalizado para gestión completa del formulario
+- **Componentes reutilizables**: Arquitectura modular para fácil mantenimiento
+- **TypeScript**: Tipado fuerte para mayor seguridad y desarrollo
+- **Responsive**: Diseño adaptable con KeyboardAvoidingView
+
+## 🐛 Solución de Problemas
+
+### Error de Metro/Bundler
+```bash
+npx react-native start --reset-cache
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+### Problemas con iOS
+```bash
+cd ios && bundle exec pod install
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Errores de compilación Android
+```bash
+cd android && ./gradlew clean
+```
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## 🤝 Contribución
 
-## Step 3: Modify your app
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
-Now that you have successfully run the app, let's make changes!
+## 📄 Licencia
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## 👥 Equipo
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+- **Desarrollador Frontend**: Implementación React Native
+- **Diseño UI/UX**: Paleta de colores y experiencia de usuario
+- **Backend Integration**: API REST y manejo de datos
 
-## Congratulations! :tada:
+---
 
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+⚡ **¡Listo para usar!** Esta aplicación está completamente funcional y lista para conectarse con tu backend de Google Forms automation.
