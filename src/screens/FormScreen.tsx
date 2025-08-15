@@ -526,8 +526,10 @@ export const FormScreen: React.FC = () => {
                 {/* Campos del paso actual */}
                 {renderFormFields()}
               </View>
+            </ScrollView>
 
-              {/* Navegación entre pasos */}
+            {/* Navegación entre pasos - FIJA EN LA PARTE INFERIOR */}
+            <View style={styles.fixedNavigationContainer}>
               <View style={styles.navigationContainer}>
                 {currentStep > 1 && (
                   <TouchableOpacity
@@ -588,7 +590,7 @@ export const FormScreen: React.FC = () => {
                   </LinearGradient>
                 )}
               </View>
-            </ScrollView>
+            </View>
           </KeyboardAvoidingView>
         </SafeAreaView>
       </LinearGradient>
@@ -674,7 +676,21 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 30,
+    paddingBottom: 100, // Espacio para la navegación fija
+  },
+  fixedNavigationContainer: {
+    position: 'absolute',
+    bottom: -14,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   messageContainer: {
     marginBottom: 20,
