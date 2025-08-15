@@ -19,7 +19,8 @@ export interface FormData {
   routerUbicadoCorrectamente: boolean;
   potenciaCorrecta: string;
   puntuacionCliente: string;
-  telefonoNombreCliente: string;
+  telefonoCliente: number;
+  nombreCliente: string;
   comentariosCaso: string;
 }
 
@@ -43,7 +44,8 @@ export interface FormErrors {
   routerUbicadoCorrectamente?: string;
   potenciaCorrecta?: string;
   puntuacionCliente?: string;
-  telefonoNombreCliente?: string;
+  telefonoCliente?: string;
+  nombreCliente?: string;
   comentariosCaso?: string;
 }
 

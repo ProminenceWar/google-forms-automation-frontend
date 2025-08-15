@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { Colors, Spacing, Typography, BorderRadius } from '../utils/constants';
 
-interface FormFieldProps extends Omit<TextInputProps, 'value' | 'onChangeText'> {
+interface FormFieldProps
+  extends Omit<TextInputProps, 'value' | 'onChangeText'> {
   label: string;
   value: string;
   onChangeText: (text: string) => void;
@@ -34,12 +35,9 @@ export const FormField: React.FC<FormFieldProps> = ({
           {required && <Text style={styles.required}> *</Text>}
         </Text>
       </View>
-      
+
       <TextInput
-        style={[
-          styles.input,
-          error && styles.inputError,
-        ]}
+        style={[styles.input, error && styles.inputError]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder || `Ingresa ${label.toLowerCase()}`}
@@ -48,46 +46,55 @@ export const FormField: React.FC<FormFieldProps> = ({
         autoCapitalize="words"
         {...textInputProps}
       />
-      
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
+
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.md,
+    marginBottom: 20,
   },
   labelContainer: {
-    marginBottom: Spacing.xs,
+    marginBottom: 8,
   },
   label: {
-    ...Typography.body,
-    color: Colors.textPrimary,
-    fontWeight: '500',
+    fontSize: 16,
+    color: '#2C3E50',
+    fontWeight: '600',
+    marginBottom: 4,
   },
   required: {
-    color: Colors.error,
+    color: '#E74C3C',
   },
   input: {
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    fontSize: Typography.body.fontSize,
-    color: Colors.textPrimary,
-    backgroundColor: Colors.background,
-    minHeight: 48,
+    borderWidth: 0,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: '#2C3E50',
+    backgroundColor: '#F8F9FA',
+    minHeight: 52,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   inputError: {
-    borderColor: Colors.error,
+    backgroundColor: '#FDF2F2',
+    borderWidth: 1,
+    borderColor: '#E74C3C',
   },
   errorText: {
-    ...Typography.caption,
-    color: Colors.error,
-    marginTop: Spacing.xs,
+    fontSize: 14,
+    color: '#E74C3C',
+    marginTop: 6,
+    marginLeft: 4,
   },
 });

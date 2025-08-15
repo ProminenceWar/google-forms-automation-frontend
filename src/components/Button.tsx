@@ -43,15 +43,17 @@ export const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator 
-          color={variant === 'primary' ? Colors.textLight : Colors.primary} 
+        <ActivityIndicator
+          color={variant === 'primary' ? Colors.textLight : Colors.primary}
           size="small"
         />
       ) : (
         <Text
           style={[
             styles.buttonText,
-            variant === 'primary' ? styles.primaryButtonText : styles.secondaryButtonText,
+            variant === 'primary'
+              ? styles.primaryButtonText
+              : styles.secondaryButtonText,
             isDisabled && styles.disabledButtonText,
             textStyle,
           ]}
@@ -65,42 +67,37 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: BorderRadius.md,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
-    elevation: 2,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    minHeight: 56,
   },
   primaryButton: {
-    backgroundColor: Colors.primary,
+    backgroundColor: 'transparent', // El gradiente se maneja desde el padre
   },
   secondaryButton: {
-    backgroundColor: Colors.background,
-    borderWidth: 1,
-    borderColor: Colors.primary,
+    backgroundColor: '#F8F9FA',
+    borderWidth: 2,
+    borderColor: '#4A90E2',
   },
   disabledButton: {
-    backgroundColor: Colors.disabled,
-    borderColor: Colors.border,
-    elevation: 0,
-    shadowOpacity: 0,
+    backgroundColor: '#BDC3C7',
+    borderColor: '#95A5A6',
   },
   buttonText: {
-    ...Typography.button,
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   primaryButtonText: {
-    color: Colors.textLight,
+    color: '#fff',
   },
   secondaryButtonText: {
-    color: Colors.primary,
+    color: '#4A90E2',
   },
   disabledButtonText: {
-    color: Colors.textSecondary,
+    color: '#7F8C8D',
   },
 });

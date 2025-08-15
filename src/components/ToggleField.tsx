@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Colors, Spacing, Typography, BorderRadius } from '../utils/constants';
 
 interface ToggleFieldProps {
@@ -36,85 +31,96 @@ export const ToggleField: React.FC<ToggleFieldProps> = ({
             {label}
             {required && <Text style={styles.required}> *</Text>}
           </Text>
-          {description && (
-            <Text style={styles.description}>{description}</Text>
-          )}
+          {description && <Text style={styles.description}>{description}</Text>}
         </View>
-        
-        <View style={[
-          styles.switch,
-          value ? styles.switchActive : styles.switchInactive,
-        ]}>
-          <View style={[
-            styles.switchThumb,
-            value ? styles.switchThumbActive : styles.switchThumbInactive,
-          ]} />
+
+        <View
+          style={[
+            styles.switch,
+            value ? styles.switchActive : styles.switchInactive,
+          ]}
+        >
+          <View
+            style={[
+              styles.switchThumb,
+              value ? styles.switchThumbActive : styles.switchThumbInactive,
+            ]}
+          />
         </View>
       </TouchableOpacity>
-      
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
+
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.md,
+    marginBottom: 20,
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background,
-    minHeight: 60,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    backgroundColor: '#F8F9FA',
+    minHeight: 70,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   labelContainer: {
     flex: 1,
-    marginRight: Spacing.md,
+    marginRight: 16,
   },
   label: {
-    ...Typography.body,
-    color: Colors.textPrimary,
-    fontWeight: '500',
+    fontSize: 16,
+    color: '#2C3E50',
+    fontWeight: '600',
+    lineHeight: 22,
   },
   required: {
-    color: Colors.error,
+    color: '#E74C3C',
   },
   description: {
-    ...Typography.caption,
-    color: Colors.textSecondary,
-    marginTop: Spacing.xs / 2,
+    fontSize: 14,
+    color: '#7F8C8D',
+    marginTop: 4,
+    lineHeight: 18,
   },
   switch: {
-    width: 50,
-    height: 28,
-    borderRadius: 14,
+    width: 56,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     padding: 2,
   },
   switchActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: '#4A90E2',
   },
   switchInactive: {
-    backgroundColor: Colors.border,
+    backgroundColor: '#BDC3C7',
   },
   switchThumb: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: Colors.background,
-    elevation: 2,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
   },
   switchThumbActive: {
     alignSelf: 'flex-end',
@@ -123,9 +129,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   errorText: {
-    ...Typography.caption,
-    color: Colors.error,
-    marginTop: Spacing.xs,
-    marginLeft: Spacing.md,
+    fontSize: 14,
+    color: '#E74C3C',
+    marginTop: 6,
+    marginLeft: 20,
   },
 });

@@ -23,7 +23,8 @@ const initialFormData: FormData = {
   routerUbicadoCorrectamente: false,
   potenciaCorrecta: '',
   puntuacionCliente: '',
-  telefonoNombreCliente: '',
+  telefonoCliente: 0,
+  nombreCliente: '',
   comentariosCaso: '',
 };
 

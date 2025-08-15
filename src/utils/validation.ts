@@ -77,9 +77,19 @@ export const validateForm = (data: FormData): FormErrors => {
   } else if (isNaN(Number(data.puntuacionCliente))) {
     errors.puntuacionCliente = 'Debe ser un número';
   }
-  if (!data.telefonoNombreCliente.trim()) {
-    errors.telefonoNombreCliente =
-      'El teléfono y nombre del cliente es obligatorio';
+  if (
+    data.telefonoCliente === undefined ||
+    data.telefonoCliente === null ||
+    isNaN(data.telefonoCliente)
+  ) {
+    errors.telefonoCliente =
+      'El teléfono del cliente es obligatorio y debe ser numérico';
+  } else if (!Number.isInteger(data.telefonoCliente)) {
+    errors.telefonoCliente = 'El teléfono debe ser un número entero';
+  }
+  // ...existing code...
+  if (!data.nombreCliente.trim()) {
+    errors.nombreCliente = 'El nombre del cliente es obligatorio';
   }
   if (!data.comentariosCaso.trim()) {
     errors.comentariosCaso = 'Los comentarios del caso son obligatorios';
@@ -118,7 +128,8 @@ export const validateField = (
     routerUbicadoCorrectamente: false,
     potenciaCorrecta: '',
     puntuacionCliente: '',
-    telefonoNombreCliente: '',
+    telefonoCliente: 0,
+    nombreCliente: '',
     comentariosCaso: '',
   };
   (tempData as any)[name] = value;
