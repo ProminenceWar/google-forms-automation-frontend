@@ -27,6 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm } from '../hooks/useForm';
 import { FormField } from '../components/FormField';
 import { ToggleField } from '../components/ToggleField';
+import { PickerField } from '../components/PickerField';
 import { Button } from '../components/Button';
 import { MessageBanner } from '../components/MessageBanner';
 import { Colors, Spacing, Typography } from '../utils/constants';
@@ -180,13 +181,23 @@ export const FormScreen: React.FC = () => {
           );
         case 'tipoFSO':
           return (
-            <FormField
+            <PickerField
               key={fieldName}
               label="¿Cuál es el tipo de FSO?"
               value={formData.tipoFSO || ''}
-              onChangeText={text => updateField('tipoFSO', text)}
+              onValueChange={value => updateField('tipoFSO', value)}
+              options={[
+                { label: 'Instalaciones', value: 'instalaciones' },
+                { label: 'Tickets de Averia', value: 'tickets_averia' },
+                { label: 'Retiro', value: 'retiro' },
+                { label: 'Traslados', value: 'traslados' },
+                { label: 'Reubicaciones', value: 'reubicaciones' },
+                { label: 'Cambio de Equipo', value: 'cambio_equipo' },
+                { label: 'Inspección', value: 'inspeccion' },
+              ]}
+              placeholder="Seleccione el tipo de FSO"
               required
-              placeholder="FSO1"
+              error={errors.tipoFSO}
             />
           );
         case 'companiaInspeccion':
