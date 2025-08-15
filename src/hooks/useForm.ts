@@ -4,17 +4,27 @@ import { validateForm, isFormValid, validateField } from '../utils/validation';
 import { submitFormMock } from '../utils/api'; // Using mock for now
 
 const initialFormData: FormData = {
-  nombre: '',
   email: '',
-  telefono: '',
-  empresa: '',
-  cargo: '',
-  experiencia: 0,
-  tieneExperienciaPrevia: false,
-  disponibleInmediato: false,
-  aceptaTerminos: false,
-  recibirNotificaciones: false,
-  trabajoRemoto: false,
+  numeroOrden: '',
+  tipoFSO: '',
+  companiaInspeccion: '',
+  nombreTecnico: '',
+  instalacionDireccionCorrecta: false,
+  combaFTB: false,
+  colocacionGripCorrecta: false,
+  alturaDropCorrecta: false,
+  puntoApoyoAdecuado: false,
+  dropLibreEmpalme: false,
+  metrosDrop: '',
+  colocacionGanchosCorrecta: false,
+  recorridoDropExteriorAdecuado: false,
+  colocacionTestTerminalCorrecta: false,
+  jackSuperficieCorrecto: false,
+  routerUbicadoCorrectamente: false,
+  potenciaCorrecta: '',
+  puntuacionCliente: '',
+  telefonoNombreCliente: '',
+  comentariosCaso: '',
 };
 
 export const useForm = () => {
@@ -23,25 +33,28 @@ export const useForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<ApiResponse | null>(null);
 
-  const updateField = useCallback((name: keyof FormData, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear field error when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
+  const updateField = useCallback(
+    (name: keyof FormData, value: any) => {
+      setFormData(prev => ({
         ...prev,
-        [name]: undefined,
+        [name]: value,
       }));
-    }
 
-    // Clear submit result when form is modified
-    if (submitResult) {
-      setSubmitResult(null);
-    }
-  }, [errors, submitResult]);
+      // Clear field error when user starts typing
+      if (errors[name as keyof FormErrors]) {
+        setErrors(prev => ({
+          ...prev,
+          [name]: undefined,
+        }));
+      }
+
+      // Clear submit result when form is modified
+      if (submitResult) {
+        setSubmitResult(null);
+      }
+    },
+    [errors, submitResult],
+  );
 
   const validateFormData = useCallback(() => {
     const formErrors = validateForm(formData);
@@ -49,14 +62,17 @@ export const useForm = () => {
     return Object.keys(formErrors).length === 0;
   }, [formData]);
 
-  const validateSingleField = useCallback((name: keyof FormData) => {
-    const error = validateField(name, formData[name]);
-    setErrors(prev => ({
-      ...prev,
-      [name]: error,
-    }));
-    return !error;
-  }, [formData]);
+  const validateSingleField = useCallback(
+    (name: keyof FormData) => {
+      const error = validateField(name, formData[name]);
+      setErrors(prev => ({
+        ...prev,
+        [name]: error,
+      }));
+      return !error;
+    },
+    [formData],
+  );
 
   const isFormValidToSubmit = useCallback(() => {
     return isFormValid(formData);
@@ -73,13 +89,13 @@ export const useForm = () => {
     try {
       const result = await submitFormMock(formData);
       setSubmitResult(result);
-      
+
       if (result.success) {
         // Reset form on successful submission
         setFormData(initialFormData);
         setErrors({});
       }
-      
+
       return result.success;
     } catch (error) {
       const errorResult: ApiResponse = {

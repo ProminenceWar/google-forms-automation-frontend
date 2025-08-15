@@ -1,28 +1,50 @@
 export interface FormData {
-  // Campos obligatorios (required fields)
-  nombre: string;
+  // Preguntas del Formulario DGF
   email: string;
-  telefono: string;
-  empresa: string;
-  cargo: string;
-  experiencia: number;
-  
-  // Campos Sí/No (Yes/No fields)
-  tieneExperienciaPrevia: boolean;
-  disponibleInmediato: boolean;
-  aceptaTerminos: boolean;
-  recibirNotificaciones: boolean;
-  trabajoRemoto: boolean;
+  numeroOrden: string;
+  tipoFSO: string;
+  companiaInspeccion: string;
+  nombreTecnico: string;
+  instalacionDireccionCorrecta: boolean;
+  combaFTB: boolean;
+  colocacionGripCorrecta: boolean;
+  alturaDropCorrecta: boolean;
+  puntoApoyoAdecuado: boolean;
+  dropLibreEmpalme: boolean;
+  metrosDrop: string;
+  colocacionGanchosCorrecta: boolean;
+  recorridoDropExteriorAdecuado: boolean;
+  colocacionTestTerminalCorrecta: boolean;
+  jackSuperficieCorrecto: boolean;
+  routerUbicadoCorrectamente: boolean;
+  potenciaCorrecta: string;
+  puntuacionCliente: string;
+  telefonoNombreCliente: string;
+  comentariosCaso: string;
 }
 
 export interface FormErrors {
-  nombre?: string;
   email?: string;
-  telefono?: string;
-  empresa?: string;
-  cargo?: string;
-  experiencia?: string;
-  aceptaTerminos?: string;
+  numeroOrden?: string;
+  tipoFSO?: string;
+  companiaInspeccion?: string;
+  nombreTecnico?: string;
+  instalacionDireccionCorrecta?: string;
+  combaFTB?: string;
+  colocacionGripCorrecta?: string;
+  alturaDropCorrecta?: string;
+  puntoApoyoAdecuado?: string;
+  dropLibreEmpalme?: string;
+  metrosDrop?: string;
+  colocacionGanchosCorrecta?: string;
+  recorridoDropExteriorAdecuado?: string;
+  colocacionTestTerminalCorrecta?: string;
+  jackSuperficieCorrecto?: string;
+  routerUbicadoCorrectamente?: string;
+  potenciaCorrecta?: string;
+  puntuacionCliente?: string;
+  telefonoNombreCliente?: string;
+  comentariosCaso?: string;
 }
 
 export interface ApiResponse {

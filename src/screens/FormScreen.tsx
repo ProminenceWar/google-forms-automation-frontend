@@ -46,7 +46,7 @@ export const FormScreen: React.FC = () => {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Formulario de Registro</Text>
+            <Text style={styles.title}>Formulario DGF</Text>
             <Text style={styles.subtitle}>
               Complete todos los campos obligatorios para continuar
             </Text>
@@ -61,117 +61,187 @@ export const FormScreen: React.FC = () => {
             />
           )}
 
-          {/* Form Fields */}
+          {/* Formulario DGF */}
           <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Información Personal</Text>
-            
-            <FormField
-              label="Nombre completo"
-              value={formData.nombre}
-              onChangeText={(text) => updateField('nombre', text)}
-              error={errors.nombre}
-              required
-              placeholder="Ej: Juan Pérez"
-              autoCapitalize="words"
-            />
+            <Text style={styles.sectionTitle}>
+              Preguntas del Formulario DGF
+            </Text>
 
             <FormField
-              label="Correo electrónico"
+              label="¿Cuál es el correo electrónico?"
               value={formData.email}
-              onChangeText={(text) => updateField('email', text)}
+              onChangeText={text => updateField('email', text)}
               error={errors.email}
               required
-              placeholder="Ej: juan@empresa.com"
+              placeholder="Pedro@gmail.com"
               keyboardType="email-address"
               autoCapitalize="none"
             />
 
             <FormField
-              label="Teléfono"
-              value={formData.telefono}
-              onChangeText={(text) => updateField('telefono', text)}
-              error={errors.telefono}
+              label="¿Cuál es el número de orden?"
+              value={formData.numeroOrden || ''}
+              onChangeText={text => updateField('numeroOrden', text)}
               required
-              placeholder="Ej: +1234567890"
-              keyboardType="phone-pad"
-            />
-          </View>
-
-          <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Información Profesional</Text>
-            
-            <FormField
-              label="Empresa"
-              value={formData.empresa}
-              onChangeText={(text) => updateField('empresa', text)}
-              error={errors.empresa}
-              required
-              placeholder="Ej: TechCorp"
-              autoCapitalize="words"
+              placeholder="123456"
             />
 
             <FormField
-              label="Cargo"
-              value={formData.cargo}
-              onChangeText={(text) => updateField('cargo', text)}
-              error={errors.cargo}
+              label="¿Cuál es el tipo de FSO?"
+              value={formData.tipoFSO || ''}
+              onChangeText={text => updateField('tipoFSO', text)}
               required
-              placeholder="Ej: Desarrollador Frontend"
-              autoCapitalize="words"
+              placeholder="FSO1"
             />
 
             <FormField
-              label="Años de experiencia"
-              value={formData.experiencia.toString()}
-              onChangeText={(text) => {
-                const num = parseInt(text, 10) || 0;
-                updateField('experiencia', num);
-              }}
-              error={errors.experiencia}
+              label="¿Qué compañía realizó la inspección?"
+              value={formData.companiaInspeccion || ''}
+              onChangeText={text => updateField('companiaInspeccion', text)}
               required
-              placeholder="Ej: 3"
+              placeholder="Compañía XYZ"
+            />
+
+            <FormField
+              label="¿Cuál es el nombre del técnico?"
+              value={formData.nombreTecnico || ''}
+              onChangeText={text => updateField('nombreTecnico', text)}
+              required
+              placeholder="Juan Pérez"
+            />
+
+            <ToggleField
+              label="¿La instalación se realizó en la dirección correcta?"
+              value={formData.instalacionDireccionCorrecta || false}
+              onValueChange={value =>
+                updateField('instalacionDireccionCorrecta', value)
+              }
+              required
+            />
+
+            <ToggleField
+              label="¿Se hizo comba en FTB?"
+              value={formData.combaFTB || false}
+              onValueChange={value => updateField('combaFTB', value)}
+              required
+            />
+
+            <ToggleField
+              label="¿La colocación del grip es correcta?"
+              value={formData.colocacionGripCorrecta || false}
+              onValueChange={value =>
+                updateField('colocacionGripCorrecta', value)
+              }
+              required
+            />
+
+            <ToggleField
+              label="¿La altura del drop es la correcta?"
+              value={formData.alturaDropCorrecta || false}
+              onValueChange={value => updateField('alturaDropCorrecta', value)}
+              required
+            />
+
+            <ToggleField
+              label="¿El punto de apoyo está adecuadamente colocado?"
+              value={formData.puntoApoyoAdecuado || false}
+              onValueChange={value => updateField('puntoApoyoAdecuado', value)}
+              required
+            />
+
+            <ToggleField
+              label="¿El drop está libre de empalme?"
+              value={formData.dropLibreEmpalme || false}
+              onValueChange={value => updateField('dropLibreEmpalme', value)}
+              required
+            />
+
+            <FormField
+              label="¿Cuántos metros de drop se utilizaron?"
+              value={formData.metrosDrop || ''}
+              onChangeText={text => updateField('metrosDrop', text)}
+              required
+              placeholder="20"
               keyboardType="numeric"
             />
-          </View>
-
-          <View style={styles.formSection}>
-            <Text style={styles.sectionTitle}>Preferencias</Text>
-            
-            <ToggleField
-              label="¿Tiene experiencia previa en el área?"
-              value={formData.tieneExperienciaPrevia}
-              onValueChange={(value) => updateField('tieneExperienciaPrevia', value)}
-              description="Indique si ha trabajado anteriormente en un rol similar"
-            />
 
             <ToggleField
-              label="¿Disponible para comenzar inmediatamente?"
-              value={formData.disponibleInmediato}
-              onValueChange={(value) => updateField('disponibleInmediato', value)}
-              description="Puede iniciar funciones sin período de preaviso"
-            />
-
-            <ToggleField
-              label="¿Acepta trabajo remoto?"
-              value={formData.trabajoRemoto}
-              onValueChange={(value) => updateField('trabajoRemoto', value)}
-              description="Está dispuesto a trabajar desde casa"
-            />
-
-            <ToggleField
-              label="¿Desea recibir notificaciones?"
-              value={formData.recibirNotificaciones}
-              onValueChange={(value) => updateField('recibirNotificaciones', value)}
-              description="Recibir actualizaciones por correo electrónico"
-            />
-
-            <ToggleField
-              label="Acepto términos y condiciones"
-              value={formData.aceptaTerminos}
-              onValueChange={(value) => updateField('aceptaTerminos', value)}
-              error={errors.aceptaTerminos}
+              label="¿La colocación de los ganchos es correcta?"
+              value={formData.colocacionGanchosCorrecta || false}
+              onValueChange={value =>
+                updateField('colocacionGanchosCorrecta', value)
+              }
               required
-              description="Debe aceptar para continuar"
+            />
+
+            <ToggleField
+              label="¿El recorrido del drop exterior es el adecuado?"
+              value={formData.recorridoDropExteriorAdecuado || false}
+              onValueChange={value =>
+                updateField('recorridoDropExteriorAdecuado', value)
+              }
+              required
+            />
+
+            <ToggleField
+              label="¿La colocación del test terminal es correcta?"
+              value={formData.colocacionTestTerminalCorrecta || false}
+              onValueChange={value =>
+                updateField('colocacionTestTerminalCorrecta', value)
+              }
+              required
+            />
+
+            <ToggleField
+              label="¿El jack de superficie está correctamente colocado?"
+              value={formData.jackSuperficieCorrecto || false}
+              onValueChange={value =>
+                updateField('jackSuperficieCorrecto', value)
+              }
+              required
+            />
+
+            <ToggleField
+              label="¿El router está ubicado correctamente?"
+              value={formData.routerUbicadoCorrectamente || false}
+              onValueChange={value =>
+                updateField('routerUbicadoCorrectamente', value)
+              }
+              required
+            />
+
+            <FormField
+              label="¿La potencia es la correcta?"
+              value={formData.potenciaCorrecta || ''}
+              onChangeText={text => updateField('potenciaCorrecta', text)}
+              required
+              placeholder="-20 dBm"
+            />
+
+            <FormField
+              label="¿Cuál es la puntuación del cliente?"
+              value={formData.puntuacionCliente || ''}
+              onChangeText={text => updateField('puntuacionCliente', text)}
+              required
+              placeholder="10"
+              keyboardType="numeric"
+            />
+
+            <FormField
+              label="¿Cuál es el teléfono y nombre del cliente?"
+              value={formData.telefonoNombreCliente || ''}
+              onChangeText={text => updateField('telefonoNombreCliente', text)}
+              required
+              placeholder="5551234567 - Juan Cliente"
+            />
+
+            <FormField
+              label="¿Comentarios del caso?"
+              value={formData.comentariosCaso || ''}
+              onChangeText={text => updateField('comentariosCaso', text)}
+              required
+              placeholder="Agregue comentarios relevantes"
+              multiline
             />
           </View>
 
