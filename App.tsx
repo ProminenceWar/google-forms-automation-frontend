@@ -6,20 +6,13 @@
  */
 
 import React from 'react';
-import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { FormScreen } from './src/screens/FormScreen';
-import { Colors } from './src/utils/constants';
+import { AppNavigator } from './src/navigation/AppNavigator';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar 
-        barStyle="dark-content" 
-        backgroundColor={Colors.background}
-        translucent={false}
-      />
-      <FormScreen />
+      <AppNavigator />
     </SafeAreaProvider>
   );
 }
