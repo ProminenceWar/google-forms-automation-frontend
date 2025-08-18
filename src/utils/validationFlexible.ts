@@ -48,11 +48,13 @@ export const validateForm = (data: FormData): FormErrors => {
   if (typeof data.dropLibreEmpalme !== 'boolean') {
     errors.dropLibreEmpalme = 'Campo obligatorio';
   }
+
+  // Metros de drop
   if (!data.metrosDrop.trim()) {
     errors.metrosDrop = 'Los metros de drop son obligatorios';
-  } else if (isNaN(Number(data.metrosDrop))) {
-    errors.metrosDrop = 'Debe ser un número';
   }
+
+  // Sí/No (continuación)
   if (typeof data.colocacionGanchosCorrecta !== 'boolean') {
     errors.colocacionGanchosCorrecta = 'Campo obligatorio';
   }
@@ -69,25 +71,28 @@ export const validateForm = (data: FormData): FormErrors => {
     errors.routerUbicadoCorrectamente = 'Campo obligatorio';
   }
 
+  // Potencia
   if (!data.potenciaCorrecta.trim()) {
     errors.potenciaCorrecta = 'La potencia es obligatoria';
   }
+
+  // Puntuación del cliente
   if (!data.puntuacionCliente.trim()) {
-    errors.puntuacionCliente = 'La puntuación es obligatoria';
-  } else if (isNaN(Number(data.puntuacionCliente))) {
-    errors.puntuacionCliente = 'Debe ser un número';
+    errors.puntuacionCliente = 'La puntuación del cliente es obligatoria';
   }
+
+  // Teléfono del cliente
   if (
     data.telefonoCliente === undefined ||
     data.telefonoCliente === null ||
-    isNaN(data.telefonoCliente)
+    data.telefonoCliente === 0
   ) {
-    errors.telefonoCliente =
-      'El teléfono del cliente es obligatorio y debe ser numérico';
-  } else if (!Number.isInteger(data.telefonoCliente)) {
-    errors.telefonoCliente = 'El teléfono debe ser un número entero';
+    errors.telefonoCliente = 'El teléfono del cliente es obligatorio';
+  } else if (!PHONE_REGEX.test(data.telefonoCliente.toString())) {
+    errors.telefonoCliente = 'Formato de teléfono inválido';
   }
-  // ...existing code...
+
+  // Nombre del cliente
   if (!data.nombreCliente.trim()) {
     errors.nombreCliente = 'El nombre del cliente es obligatorio';
   }
@@ -98,8 +103,46 @@ export const validateForm = (data: FormData): FormErrors => {
   return errors;
 };
 
+// Nueva función de validación flexible - solo campos críticos
+export const validateFormForSubmission = (data: FormData): FormErrors => {
+  const errors: FormErrors = {};
+
+  // Solo validar campos críticos para envío
+  if (!data.numeroOrden.trim()) {
+    errors.numeroOrden = 'El número de orden es obligatorio';
+  }
+
+  if (!data.nombreTecnico.trim()) {
+    errors.nombreTecnico = 'El nombre del técnico es obligatorio';
+  }
+
+  if (!data.nombreCliente.trim()) {
+    errors.nombreCliente = 'El nombre del cliente es obligatorio';
+  }
+
+  // Validar email solo si está presente
+  if (data.email.trim() && !EMAIL_REGEX.test(data.email)) {
+    errors.email = 'Formato de correo inválido';
+  }
+
+  // Validar teléfono solo si está presente
+  if (data.telefonoCliente && data.telefonoCliente !== 0) {
+    if (!PHONE_REGEX.test(data.telefonoCliente.toString())) {
+      errors.telefonoCliente = 'Formato de teléfono inválido';
+    }
+  }
+
+  return errors;
+};
+
 export const isFormValid = (data: FormData): boolean => {
   const errors = validateForm(data);
+  return Object.keys(errors).length === 0;
+};
+
+// Nueva función para validar si se puede enviar (más flexible)
+export const canSubmitForm = (data: FormData): boolean => {
+  const errors = validateFormForSubmission(data);
   return Object.keys(errors).length === 0;
 };
 

@@ -1,4 +1,6 @@
 export interface FormData {
+  // ID único del formulario
+  id?: string;
   // Preguntas del Formulario DGF
   email: string;
   numeroOrden: string;

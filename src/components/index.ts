@@ -5,3 +5,4 @@ export { ToggleField } from './ToggleField';
 export { PickerField } from './PickerField';
 export { LoadingSpinner } from './LoadingSpinner';
 export { MessageBanner } from './MessageBanner';
+export { DeleteConfirmationModal } from './DeleteConfirmationModal';

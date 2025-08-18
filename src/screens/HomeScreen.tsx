@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   StatusBar,
   Dimensions,
+  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
   HomeIcon,
   ClipboardDocumentListIcon,
@@ -19,36 +20,97 @@ import {
   PlusIcon,
   CheckCircleIcon,
   ClockIcon,
+  PencilIcon,
+  TrashIcon,
 } from 'react-native-heroicons/solid';
+import { useLocalStorage, StoredForm } from '../hooks/useLocalStorage';
+import { DeleteConfirmationModal } from '../components/DeleteConfirmationModal';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
-  // Mock data for daily forms
-  const todayForms = [
-    {
-      id: 1,
-      orderNumber: '12345',
-      client: 'Juan Pérez',
-      status: 'completed',
-      time: '09:30',
-    },
-    {
-      id: 2,
-      orderNumber: '12346',
-      client: 'María García',
-      status: 'pending',
-      time: '10:15',
-    },
-    {
-      id: 3,
-      orderNumber: '12347',
-      client: 'Carlos López',
-      status: 'completed',
-      time: '11:45',
-    },
-  ];
+  const { loadForms, deleteForm } = useLocalStorage();
+
+  const [forms, setForms] = useState<StoredForm[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [formToDelete, setFormToDelete] = useState<StoredForm | null>(null);
+
+  // Cargar formularios al montar el componente y cada vez que se enfoque la pantalla
+  useFocusEffect(
+    useCallback(() => {
+      loadFormsData();
+    }, []),
+  );
+
+  const loadFormsData = async () => {
+    try {
+      setIsLoading(true);
+      const loadedForms = await loadForms();
+      setForms(loadedForms);
+    } catch (error) {
+      console.error('Error loading forms:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteForm = (form: StoredForm) => {
+    setFormToDelete(form);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    if (formToDelete) {
+      try {
+        await deleteForm(formToDelete.id);
+        await loadFormsData(); // Recargar la lista
+        setDeleteModalVisible(false);
+        setFormToDelete(null);
+      } catch (error) {
+        console.error('Error deleting form:', error);
+        Alert.alert('Error', 'No se pudo eliminar el formulario');
+      }
+    }
+  };
+
+  const handleEditForm = (form: StoredForm) => {
+    (navigation as any).navigate('Forms', {
+      screen: 'NewForm',
+      params: { editFormId: form.id },
+    });
+  };
+
+  const getTodayForms = () => {
+    const today = new Date().toDateString();
+    return forms.filter(
+      form => new Date(form.createdAt).toDateString() === today,
+    );
+  };
+
+  const getCompletedFormsCount = () => {
+    return forms.filter(form => form.status === 'completed').length;
+  };
+
+  const getPendingFormsCount = () => {
+    return forms.filter(form => form.status === 'pending').length;
+  };
+
+  const getAverageRating = () => {
+    const ratedForms = forms.filter(
+      form => form.clientRating && form.clientRating > 0,
+    );
+    if (ratedForms.length === 0) return 0;
+
+    const total = ratedForms.reduce(
+      (sum, form) => sum + (form.clientRating || 0),
+      0,
+    );
+    return (total / ratedForms.length).toFixed(1);
+  };
+
+  const todayForms = getTodayForms();
 
   // Mock data for todo list
   const todoItems = [
@@ -68,9 +130,10 @@ export const HomeScreen: React.FC = () => {
   ];
 
   const stats = {
-    formsToday: 5,
-    formsCompleted: 3,
-    pendingTasks: 2,
+    formsToday: todayForms.length,
+    formsCompleted: getCompletedFormsCount(),
+    pendingTasks: getPendingFormsCount(),
+    averageRating: getAverageRating(),
   };
 
   return (
@@ -86,7 +149,7 @@ export const HomeScreen: React.FC = () => {
             <View style={styles.headerContent}>
               <View style={styles.greeting}>
                 <Text style={styles.greetingText}>HELLO!</Text>
-                <Text style={styles.nameText}>Anna Marchel</Text>
+                <Text style={styles.nameText}>Pedro García</Text>
               </View>
               <TouchableOpacity style={styles.profileButton}>
                 <UserCircleIcon size={40} color="#fff" />
@@ -148,7 +211,7 @@ export const HomeScreen: React.FC = () => {
               </View>
 
               {todayForms.map(form => (
-                <TouchableOpacity key={form.id} style={styles.formItem}>
+                <View key={form.id} style={styles.formItem}>
                   <View style={styles.formIcon}>
                     {form.status === 'completed' ? (
                       <CheckCircleIcon size={20} color="#4CAF50" />
@@ -160,10 +223,34 @@ export const HomeScreen: React.FC = () => {
                     <Text style={styles.formTitle}>
                       Order #{form.orderNumber}
                     </Text>
-                    <Text style={styles.formClient}>{form.client}</Text>
+                    <Text style={styles.formClient}>{form.clientName}</Text>
+                    <Text style={styles.formCompany}>
+                      {form.companyInspection}
+                    </Text>
                   </View>
-                  <Text style={styles.formTime}>{form.time}</Text>
-                </TouchableOpacity>
+                  <View style={styles.formTime}>
+                    <Text style={styles.formTimeText}>
+                      {new Date(form.createdAt).toLocaleTimeString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </Text>
+                  </View>
+                  <View style={styles.formActions}>
+                    <TouchableOpacity
+                      style={styles.editButton}
+                      onPress={() => handleEditForm(form)}
+                    >
+                      <PencilIcon size={16} color="#1976D2" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleDeleteForm(form)}
+                    >
+                      <TrashIcon size={16} color="#E74C3C" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               ))}
             </View>
 
@@ -214,6 +301,17 @@ export const HomeScreen: React.FC = () => {
           </ScrollView>
         </SafeAreaView>
       </LinearGradient>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        visible={deleteModalVisible}
+        form={formToDelete}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setFormToDelete(null);
+        }}
+      />
     </>
   );
 };
@@ -381,9 +479,33 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   formTime: {
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  formTimeText: {
     fontSize: 12,
     color: '#95A5A6',
     fontWeight: '500',
+  },
+  formCompany: {
+    fontSize: 12,
+    color: '#BDC3C7',
+    marginTop: 1,
+  },
+  formActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  editButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#E3F2FD',
+  },
+  deleteButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#FFEBEE',
   },
   todoItem: {
     flexDirection: 'row',

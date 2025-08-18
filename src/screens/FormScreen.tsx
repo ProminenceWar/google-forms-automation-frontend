@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   View,
@@ -23,8 +23,10 @@ import {
   PaperAirplaneIcon,
 } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 import { useForm } from '../hooks/useForm';
+import { useLocalStorage, StoredForm } from '../hooks/useLocalStorage';
 import { FormField } from '../components/FormField';
 import { ToggleField } from '../components/ToggleField';
 import { PickerField } from '../components/PickerField';
@@ -101,6 +103,11 @@ const FORM_GROUPS = [
 ];
 
 export const FormScreen: React.FC = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { editFormId } = (route.params as { editFormId?: string }) || {};
+  const isEditMode = !!editFormId;
+
   const {
     formData,
     errors,
@@ -109,13 +116,169 @@ export const FormScreen: React.FC = () => {
     updateField,
     isFormValidToSubmit,
     submitForm,
+    resetForm,
     clearSubmitResult,
+    setFormData,
+    validateFormData,
   } = useForm();
 
+  const { saveForm, updateForm, getFormById } = useLocalStorage();
+
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Cargar datos del formulario si estamos en modo de edición
+  useEffect(() => {
+    if (isEditMode && editFormId) {
+      loadFormForEdit();
+    } else if (!isEditMode) {
+      // Si no estamos en modo de edición, asegurar que el formulario esté limpio
+      console.log('Not in edit mode, resetting form');
+      resetForm();
+    }
+  }, [isEditMode, editFormId]);
+
+  // Efecto adicional para detectar cambios en el modo de edición
+  useEffect(() => {
+    console.log('Edit mode changed:', { isEditMode, editFormId });
+  }, [isEditMode, editFormId]);
+
+  // Debug: Monitorear cambios en formData
+  useEffect(() => {
+    if (isEditMode) {
+      console.log('FormData changed in edit mode:', {
+        id: formData.id,
+        numeroOrden: formData.numeroOrden,
+        nombreTecnico: formData.nombreTecnico,
+        nombreCliente: formData.nombreCliente,
+        email: formData.email,
+      });
+    }
+  }, [formData, isEditMode]);
+
+  const loadFormForEdit = async () => {
+    try {
+      setIsLoading(true);
+      console.log('=== LOAD FORM FOR EDIT ===');
+      console.log('Edit Form ID:', editFormId);
+      console.log('Current formData before load:', formData);
+
+      const form = await getFormById(editFormId!);
+      console.log('Form retrieved from storage:', form);
+
+      if (form && form.formData) {
+        // Asegurar que el FormData incluya el ID del formulario almacenado
+        const formDataWithId = {
+          ...form.formData,
+          id: form.id, // Mantener la concordancia del ID
+        };
+
+        console.log('Form data to set:', formDataWithId);
+
+        // Usar setFormData directamente para asegurar la actualización
+        setFormData(formDataWithId);
+
+        console.log('=== FORM DATA SET ===');
+      } else {
+        console.error(
+          'No form found or no formData in form with ID:',
+          editFormId,
+        );
+        console.log('Form object:', form);
+      }
+    } catch (error) {
+      console.error('Error loading form for edit:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
-    await submitForm();
+    try {
+      // Primero intentar enviar el formulario
+      const success = await submitForm();
+
+      if (success) {
+        // Preparar los datos para guardar, manteniendo el ID si existe
+        const formToSave = {
+          formData: {
+            ...formData,
+            id: isEditMode && editFormId ? editFormId : formData.id, // Mantener el ID en edición
+          },
+          orderNumber: formData.numeroOrden || `ORD-${Date.now()}`,
+          clientName: formData.nombreCliente || 'Cliente no especificado',
+          technicianName: formData.nombreTecnico || 'Técnico no especificado',
+          companyInspection:
+            formData.companiaInspeccion || 'Compañía no especificada',
+          formType: formData.tipoFSO || 'Tipo no especificado',
+          status: 'completed' as const,
+          clientRating: formData.puntuacionCliente
+            ? parseInt(formData.puntuacionCliente)
+            : undefined,
+          comments: formData.comentariosCaso || undefined,
+        };
+
+        if (isEditMode && editFormId) {
+          // Actualizar formulario existente
+          await updateForm(editFormId, formToSave);
+        } else {
+          // Guardar nuevo formulario
+          const savedForm = await saveForm(formToSave);
+          // Actualizar el formData con el ID del formulario recién guardado
+          updateField('id', savedForm.id);
+        }
+
+        // Solo resetear el formulario si NO estamos en modo de edición
+        // En modo de edición, mantener los datos para futuras ediciones
+        if (!isEditMode) {
+          resetForm();
+        }
+
+        // Navegación en secuencia: primero a FormsList, luego a Home
+        setTimeout(() => {
+          // Primero ir a FormsListScreen para cerrar la vista de formulario
+          navigation.navigate('FormsList' as never);
+          
+          // Después de un breve delay, ir a Home para mostrar el resultado
+          setTimeout(() => {
+            navigation.navigate('Home' as never);
+          }, 500);
+        }, 2000);
+      } else {
+        // Si la validación falla, navegar al primer campo con error
+        navigateToFirstError();
+      }
+    } catch (error) {
+      console.error('Error saving form:', error);
+    }
+  };
+
+  const navigateToFirstError = () => {
+    const allErrors = validateFormData();
+    if (Object.keys(allErrors).length === 0) return;
+
+    // Encontrar el primer campo con error
+    const firstErrorField = Object.keys(allErrors)[0];
+
+    // Encontrar en qué paso está ese campo
+    for (let i = 0; i < FORM_GROUPS.length; i++) {
+      const group = FORM_GROUPS[i];
+      if (group.fields.includes(firstErrorField)) {
+        setCurrentStep(group.id);
+        break;
+      }
+    }
+  };
+
+  // Nueva función para validar si se puede enviar (más flexible)
+  const canSubmitForm = () => {
+    // Campos mínimos requeridos para poder enviar
+    const requiredFields = ['numeroOrden', 'nombreTecnico', 'nombreCliente'];
+
+    return requiredFields.every(field => {
+      const value = formData[field as keyof typeof formData];
+      return value && value.toString().trim() !== '';
+    });
   };
 
   const handleNextStep = () => {
@@ -574,13 +737,13 @@ export const FormScreen: React.FC = () => {
                     colors={['#4A90E2', '#50A3E5']}
                     style={[
                       styles.submitButtonGradient,
-                      !isFormValidToSubmit() && styles.submitButtonDisabled,
+                      !canSubmitForm() && styles.submitButtonDisabled,
                     ]}
                   >
                     <TouchableOpacity
                       style={styles.submitButtonTouch}
                       onPress={handleSubmit}
-                      disabled={!isFormValidToSubmit() || isSubmitting}
+                      disabled={!canSubmitForm() || isSubmitting}
                     >
                       <Text style={styles.submitButtonText}>
                         {isSubmitting ? 'Enviando...' : 'Enviar Formulario'}

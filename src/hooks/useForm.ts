@@ -1,9 +1,16 @@
 import { useState, useCallback } from 'react';
 import { FormData, FormErrors, ApiResponse } from '../types';
-import { validateForm, isFormValid, validateField } from '../utils/validation';
+import {
+  validateForm,
+  isFormValid,
+  validateField,
+  validateFormForSubmission,
+  canSubmitForm,
+} from '../utils/validationFlexible';
 import { submitFormMock } from '../utils/api'; // Using mock for now
 
 const initialFormData: FormData = {
+  id: undefined,
   email: '',
   numeroOrden: '',
   tipoFSO: '',
@@ -76,11 +83,15 @@ export const useForm = () => {
   );
 
   const isFormValidToSubmit = useCallback(() => {
-    return isFormValid(formData);
+    return canSubmitForm(formData);
   }, [formData]);
 
   const submitForm = useCallback(async () => {
-    if (!validateFormData()) {
+    // Usar validación flexible para envío
+    const submissionErrors = validateFormForSubmission(formData);
+
+    if (Object.keys(submissionErrors).length > 0) {
+      setErrors(submissionErrors);
       return false;
     }
 
@@ -91,12 +102,7 @@ export const useForm = () => {
       const result = await submitFormMock(formData);
       setSubmitResult(result);
 
-      if (result.success) {
-        // Reset form on successful submission
-        setFormData(initialFormData);
-        setErrors({});
-      }
-
+      // NO resetear el formulario aquí - se hará en FormScreen después de guardar
       return result.success;
     } catch (error) {
       const errorResult: ApiResponse = {
@@ -120,6 +126,10 @@ export const useForm = () => {
     setSubmitResult(null);
   }, []);
 
+  const setFullFormData = useCallback((newFormData: FormData) => {
+    setFormData(newFormData);
+  }, []);
+
   return {
     formData,
     errors,
@@ -132,5 +142,6 @@ export const useForm = () => {
     submitForm,
     resetForm,
     clearSubmitResult,
+    setFormData: setFullFormData,
   };
 };
