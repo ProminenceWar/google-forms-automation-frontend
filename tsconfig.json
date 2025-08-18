@@ -1,7 +1,10 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods", "android", "ios"]

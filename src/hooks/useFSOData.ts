@@ -98,22 +98,67 @@ export const useFSOData = () => {
   const getFSOById = useCallback(
     async (id: string): Promise<FSODetailData | null> => {
       try {
-        const fso = fsoList.find(item => item.id === id);
-        if (!fso) return null;
+        let fso = fsoList.find(item => item.id === id);
+
+        // Si no encontramos el FSO en la lista, crear datos mock basados en el ID
+        if (!fso) {
+          fso = {
+            id: id,
+            clientName: 'Cliente Procesado',
+            orderNumber: `ORD-${Math.floor(Math.random() * 10000)}`,
+            address: 'Dirección extraída del documento PDF',
+            serviceType: 'Instalación de Fibra Óptica',
+            status: 'completed',
+            uploadedAt: new Date().toISOString(),
+            processedAt: new Date().toISOString(),
+            fileName: 'documento_procesado.pdf',
+            fileSize: 2500000,
+          };
+        }
+
+        // Generar datos adicionales mock basados en el cliente
+        const mockPhones = [
+          '+52 555 123 4567',
+          '+52 555 987 6543',
+          '+52 555 456 7890',
+        ];
+        const mockEmails = [
+          'cliente@email.com',
+          'contacto@empresa.com',
+          'info@cliente.mx',
+        ];
+        const mockTechnicians = [
+          'Pedro González',
+          'Ana López',
+          'Carlos Martínez',
+        ];
+        const mockNotes = [
+          'Cliente requiere instalación en segundo piso. Acceso por escalera externa.',
+          'Instalación en oficina comercial. Horario disponible: 9 AM - 5 PM.',
+          'Casa habitación con jardín. Cliente prefiere instalación por la mañana.',
+        ];
+
+        // Usar el hash del ID para seleccionar datos consistentes
+        const idHash = id.split('').reduce((a, b) => {
+          a = (a << 5) - a + b.charCodeAt(0);
+          return a & a;
+        }, 0);
+        const index = Math.abs(idHash) % 3;
 
         // Simular datos adicionales del backend
         const detailData: FSODetailData = {
           ...fso,
-          clientPhone: '+52 555 123 4567',
-          clientEmail: 'cliente@email.com',
-          technician: 'Pedro González',
-          scheduleDate: '2025-08-20T09:00:00Z',
-          notes:
-            'Cliente requiere instalación en segundo piso. Acceso por escalera externa.',
+          clientPhone: mockPhones[index],
+          clientEmail: mockEmails[index],
+          technician: mockTechnicians[index],
+          scheduleDate: new Date(
+            Date.now() + 2 * 24 * 60 * 60 * 1000,
+          ).toISOString(), // +2 días
+          notes: mockNotes[index],
           attachments: ['diagrama_instalacion.pdf', 'fotos_sitio.jpg'],
           coordinates: {
-            latitude: 19.4326,
-            longitude: -99.1332,
+            latitude: 19.4326 + (Math.random() - 0.5) * 0.1,
+            longitude: -99.1332 + (Math.random() - 0.5) * 0.1,
           },
         };
 

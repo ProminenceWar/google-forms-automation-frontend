@@ -244,7 +244,11 @@ export const FSOScreen: React.FC = () => {
 
               {/* Processed Data Preview */}
               {processedData && (
-                <View style={styles.processedDataCard}>
+                <TouchableOpacity
+                  style={styles.processedDataCard}
+                  onPress={() => handleViewFSO(processedData)}
+                  activeOpacity={0.8}
+                >
                   <Text style={styles.processedTitle}>Datos Procesados</Text>
                   <View style={styles.dataRow}>
                     <UserIcon size={16} color="#4A90E2" />
@@ -273,7 +277,7 @@ export const FSOScreen: React.FC = () => {
                       {processedData.serviceType}
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               )}
 
               {/* Submit Button */}
