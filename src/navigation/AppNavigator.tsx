@@ -5,12 +5,13 @@ import { View, Text, StyleSheet } from 'react-native';
 import {
   HomeIcon,
   ClipboardDocumentListIcon,
-  CalendarDaysIcon,
+  DocumentTextIcon,
   Cog6ToothIcon,
 } from 'react-native-heroicons/solid';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { FormsStackNavigator } from './FormsStackNavigator';
+import { FSOStackNavigator } from './FSOStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,8 +40,8 @@ export const AppNavigator: React.FC = () => {
               case 'Forms':
                 IconComponent = ClipboardDocumentListIcon;
                 break;
-              case 'Calendar':
-                IconComponent = CalendarDaysIcon;
+              case 'FSO':
+                IconComponent = DocumentTextIcon;
                 break;
               case 'Settings':
                 IconComponent = Cog6ToothIcon;
@@ -62,9 +63,9 @@ export const AppNavigator: React.FC = () => {
           options={{ tabBarLabel: 'Forms' }}
         />
         <Tab.Screen
-          name="Calendar"
-          component={PlaceholderScreen}
-          options={{ tabBarLabel: 'Calendar' }}
+          name="FSO"
+          component={FSOStackNavigator}
+          options={{ tabBarLabel: 'Órdenes' }}
         />
         <Tab.Screen
           name="Settings"

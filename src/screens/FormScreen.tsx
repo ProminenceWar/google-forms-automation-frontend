@@ -238,7 +238,7 @@ export const FormScreen: React.FC = () => {
         setTimeout(() => {
           // Primero ir a FormsListScreen para cerrar la vista de formulario
           navigation.navigate('FormsList' as never);
-          
+
           // Después de un breve delay, ir a Home para mostrar el resultado
           setTimeout(() => {
             navigation.navigate('Home' as never);
